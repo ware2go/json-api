@@ -577,6 +577,7 @@ by clients and servers, and they **MUST** meet all of the following conditions:
 - Member names **MUST** contain only the allowed characters listed below.
 - Member names **MUST** start and end with a "globally allowed character",
   as defined below.
+- Member names **SHOULD** use camelCasing   
 
 To enable an easy mapping of member names to URLs, it is **RECOMMENDED** that
 member names use only non-reserved, URL safe characters specified in [RFC 3986](http://tools.ietf.org/html/rfc3986#page-13).
@@ -638,6 +639,15 @@ The following characters **MUST NOT** be used in member names:
 
 Data, including resources and relationships, can be fetched by sending a
 `GET` request to an endpoint.
+
+In general, servers **SHOULD** service fetching via a `GET` request. However, in cases
+where it is possible that lengthy search parameters provided via query parameters 
+may exceed the maximum URL length (1024), servers **MAY** support fetching via 
+a `POST` request. In that case the search parameters **MUST** be included in the POST body.
+
+In such a case, where a fetch is supported via a `POST` request, the server **SHOULD NOT** support
+fetch via both `GET` and `POST`; rather only `POST` may be supported. In addition, this
+deviation from the norm **MUST** be clearly called out in the supporting documention (e.g. OpenAPI).
 
 Responses can be further refined with the optional features described below.
 
@@ -1104,13 +1114,16 @@ remain consistent with JSON:API's [sorting rules](#fetching-sorting).
 The `page` query parameter is reserved for pagination. Servers and clients
 **SHOULD** use this key for pagination operations.
 
-> Note: JSON:API is agnostic about the pagination strategy used by a server.
-Effective pagination strategies include (but are not limited to):
-page-based, offset-based, and cursor-based. The `page` query parameter can
+Ideally, implementations **SHOULD** use cursor-based strategy for pagination. The 
+[cursor pagination extension](/profiles/ethanresnick/cursor-pagination/)
+is the default implementation for this strategy. 
+
+If the cursor-based strategy is not viable or non-trivial to implement, 
+effective pagination strategies include (but are not limited to):
+page-based and offset-based. The `page` query parameter can
 be used as a basis for any of these strategies. For example, a page-based
 strategy might use query parameters such as `page[number]` and `page[size]`,
-an offset-based strategy might use `page[offset]` and `page[limit]`, while a
-cursor-based strategy might use `page[cursor]`.
+and an offset-based strategy might use `page[offset]` and `page[limit]`.
 
 > Note: The example query parameters above use unencoded `[` and `]` characters
 simply for readability. In practice, these characters must be percent-encoded,
@@ -1304,7 +1317,7 @@ responses, in accordance with
 
 ### <a href="#crud-updating" id="crud-updating" class="headerlink"></a> Updating Resources
 
-A resource can be updated by sending a `PATCH` request to the URL that
+A resource can be partially updated by sending a `PATCH` request to the URL that
 represents the resource.
 
 The URL for a resource can be obtained in the `self` link of the resource
@@ -1361,6 +1374,12 @@ Accept: application/vnd.api+json
   }
 }
 ```
+
+Updating ALL of a resource's [attributes] **MAY** also be provided by the server 
+via a `PUT` request to the URL that represents the resource.
+In this case, ALL of the [attributes] must be included in the request. If any of the attributes 
+for the resource are missing, the service **MUST** interpret the missing attributes as
+`null` values.
 
 #### <a href="#crud-updating-resource-relationships" id="crud-updating-resource-relationships" class="headerlink"></a> Updating a Resource's Relationships
 
