@@ -96,7 +96,7 @@ If a document does not contain a top-level `data` key, the `included` member
 
 The top-level [links object][links] **MAY** contain the following members:
 
-* 1) Relative Links --> I've never enjoyed the complex relationship links that JSON spec provides. There are very few occurrences of other API titans implementing complex hateoas relationships. Some API's I've used provide detailed level links like invoices/{id}. I also found in a consumer survey that for a few hundred consumers of our claims API's less than 10% of teams even used self-links. After the lack of usage, it showcased how it wasn't really helpful. I just wanted to start the conversation and not necessarily provide the answer. I'm not sure how others feel on this topic, but these implementations can get REALLY painful through the application life cycle.
+* 1) Relative Links --> I've never enjoyed the complex relationship links that JSON spec provides. There are very few occurrences of other API titans implementing complex hateoas relationships. Some API's I've used provide detailed level links like invoices/{id}. I also found at SF, in an API consumer survey to a few hundred developers, that less than 5% of clients were activtely using the self-links. Most links were being built using env vars. After the lack of usage, it showcased how it wasn't really helpful. I just wanted to start the conversation and not necessarily provide the answer. I'm not sure how others feel on this topic, but these implementations can get REALLY painful through the application life cycle.
 
 * `urlName`: a [related resource link] when the primary data represents a
   resource relationship.
