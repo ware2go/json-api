@@ -96,13 +96,27 @@ If a document does not contain a top-level `data` key, the `included` member
 
 The top-level [links object][links] **MAY** contain the following members:
 
-* I've never enjoyed the complex relationship links that json spec provides. There are very few occurences of people implementing complex relationships 
+* I've never enjoyed the complex relationship links that json spec provides. There are very few occurences of other API titans implementing complex relationships. Some due provide detailed level links like invoices/{id}. I also found in a consumer survey that for a few hundred consumers of our claims API's less than 10% of teams even used self-links. Just wanted to start the conversation and not ncessarily provide the answer. I'm not sure how others feel on this topic, but these implementations can get REALLY painful through the application life cycle.
+
 * `urlName`: a [related resource link] when the primary data represents a
   resource relationship.
   - We found the simplication of specific or explicit naming made it easier for the client to determine which URL to grab.
-  - invoiceUrl
-  - invoicesUrl
   - invoiceDetailUrl
+
+
+```json
+{ "data": [{
+    "type": "invoices",
+    "id": "1",
+    "attributes": {
+      "title": "JSON:API paints my bikeshed!"
+    },
+    "links": {
+      "invoiceDetailUrl": "full-context-root/invoices/1"
+    }
+}
+```
+
 * [pagination] links for the primary data.
 
 The document's "primary data" is a representation of the resource or collection
