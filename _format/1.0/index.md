@@ -1210,7 +1210,8 @@ have.
 #### <a href="#crud-creating-client-ids" id="crud-creating-client-ids" class="headerlink"></a> Client-Generated IDs
 
 A server **MAY** accept a client-generated ID along with a request to create
-a resource. An ID **MUST** be specified with an `id` key, the value of
+a resource. In this case, the request **MUST** be a `PUT`. 
+An ID **MUST** be specified with an `id` key, the value of
 which **MUST** be a universally unique identifier. The client **SHOULD** use
 a properly generated and formatted *UUID* as described in RFC 4122
 [[RFC4122](http://tools.ietf.org/html/rfc4122.html)].
@@ -1224,7 +1225,7 @@ unique identifiers.
 For example:
 
 ```http
-POST /photos HTTP/1.1
+PUT /photos/550e8400-e29b-41d4-a716-446655440000 HTTP/1.1
 Content-Type: application/vnd.api+json
 Accept: application/vnd.api+json
 
