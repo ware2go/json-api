@@ -1114,18 +1114,32 @@ Concepts of order, as expressed in the naming of pagination links, **MUST**
 remain consistent with JSON:API's [sorting rules](#fetching-sorting).
 
 The `page` query parameter is reserved for pagination. Servers and clients
-**SHOULD** use this key for pagination operations.
+**MUST** use this key for pagination operations.
 
-Ideally, implementations **SHOULD** use cursor-based strategy for pagination. The 
-[cursor pagination extension](/profiles/ethanresnick/cursor-pagination/)
-is the default implementation for this strategy. 
+In terms of the pagination contract between servers and clients, servers **MUST** 
+implement the cursor-based pagination contract as described in the 
+[cursor pagination extension](/profiles/ethanresnick/cursor-pagination/).
 
-If the cursor-based strategy is not viable or non-trivial to implement, 
-effective pagination strategies include (but are not limited to):
-page-based and offset-based. The `page` query parameter can
-be used as a basis for any of these strategies. For example, a page-based
-strategy might use query parameters such as `page[number]` and `page[size]`,
-and an offset-based strategy might use `page[offset]` and `page[limit]`.
+This means that the client makes an initial fetch request, optionally providing
+a page size limit via the `page[size]=X` query parameter. Note that the server
+**MAY** implement a default page size and **MAY** also impose a maximum size limit
+that overrides the client request. Once this initial request is made, the server
+will respond with the data for the initial page, and include pagination links 
+for `next` and `prev` links in the pagination. The client **MUST** follow these links
+for pagination, and **MUST NOT** try and compose the URL manually. The cursor tokens
+provided by server **SHOULD** be opaque to the client so that the client does not try
+and manually form the pagination links. 
+
+All of the above described the contract for pagination between server and client. 
+The server is free to implement the actual pagination logic internally as it best 
+sees fit, which may depend on the datasource in question. If possible, the server **SHOULD**
+implement true cursor based pagination. For example, postgres has support for native cursors
+in queries see [here[(https://www.citusdata.com/blog/2016/03/30/five-ways-to-paginate/). This is optimal
+as offset based pagination suffers from page window inconsistency; see 
+[this link](https://slack.engineering/evolving-api-pagination-at-slack-1c1f644f8e12) for more details.
+If a true cursor based implementation is not possible, then a server **MAY** implement time based 
+pagination or offset based pagination. In either case, as mentioned above the server **SHOULD** 
+make the cursors opaque to the client (even via Base64 encoding for example).
 
 > Note: The example query parameters above use unencoded `[` and `]` characters
 simply for readability. In practice, these characters must be percent-encoded,
