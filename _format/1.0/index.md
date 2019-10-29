@@ -643,7 +643,9 @@ Data, including resources and relationships, can be fetched by sending a
 In general, servers **SHOULD** service fetching via a `GET` request. However, in cases
 where it is possible that lengthy search parameters provided via query parameters 
 may exceed the maximum URL length (1024), servers **MAY** support fetching via 
-a `POST` request. In that case the search parameters **MUST** be included in the POST body.
+a `POST` request. In that case the search parameters **MUST** be included in the POST body. 
+These scenarios should be limited to endpoints that service custom reports for example, 
+where clients could be passing in hundreds of IDs to generate a report. 
 
 In such a case, where a fetch is supported via a `POST` request, the server **SHOULD NOT** support
 fetch via both `GET` and `POST`; rather only `POST` may be supported. In addition, this
