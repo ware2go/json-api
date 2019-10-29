@@ -577,7 +577,7 @@ by clients and servers, and they **MUST** meet all of the following conditions:
 - Member names **MUST** contain only the allowed characters listed below.
 - Member names **MUST** start and end with a "globally allowed character",
   as defined below.
-- Member names **SHOULD** use camelCasing   
+- Member names **MUST** use camelCasing   
 
 To enable an easy mapping of member names to URLs, it is **RECOMMENDED** that
 member names use only non-reserved, URL safe characters specified in [RFC 3986](http://tools.ietf.org/html/rfc3986#page-13).
