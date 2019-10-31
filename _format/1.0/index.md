@@ -11,10 +11,6 @@ JSON:API is designed to minimize both the number of requests and the amount of
 data transmitted between clients and servers. This efficiency is achieved
 without compromising readability, flexibility, or discoverability.
 
-JSON:API requires use of the JSON:API media type
-([`application/vnd.api+json`](http://www.iana.org/assignments/media-types/application/vnd.api+json))
-for exchanging data.
-
 ## <a href="#conventions" id="conventions" class="headerlink"></a> Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
@@ -27,21 +23,21 @@ interpreted as described in RFC 2119
 ### <a href="#content-negotiation-clients" id="content-negotiation-clients" class="headerlink"></a> Client Responsibilities
 
 Clients **MUST** send all JSON:API data in request documents with the header
-`Content-Type: application/vnd.api+json` without any media type parameters.
+`Content-Type: application/json` without any media type parameters.
 
 Clients that include the JSON:API media type in their `Accept` header **MUST**
 specify the media type there at least once without any media type parameters.
 
-Clients **MUST** ignore any parameters for the `application/vnd.api+json`
+Clients **MUST** ignore any parameters for the `application/json`
 media type received in the `Content-Type` header of response documents.
 
 ### <a href="#content-negotiation-servers" id="content-negotiation-servers" class="headerlink"></a> Server Responsibilities
 
 Servers **MUST** send all JSON:API data in response documents with the header
-`Content-Type: application/vnd.api+json` without any media type parameters.
+`Content-Type: application/json` without any media type parameters.
 
 Servers **MUST** respond with a `415 Unsupported Media Type` status code if
-a request specifies the header `Content-Type: application/vnd.api+json`
+a request specifies the header `Content-Type: application/json`
 with any media type parameters.
 
 Servers **MUST** respond with a `406 Not Acceptable` status code if a
@@ -54,12 +50,8 @@ and versioning.
 
 ## <a href="#document-structure" id="document-structure" class="headerlink"></a> Document Structure
 
-This section describes the structure of a JSON:API document, which is identified
-by the media type [`application/vnd.api+json`](http://www.iana.org/assignments/media-types/application/vnd.api+json).
-JSON:API documents are defined in JavaScript Object Notation (JSON)
-[[RFC7159](http://tools.ietf.org/html/rfc7159)].
-
-Although the same media type is used for both request and response documents,
+This section describes the structure of a JSON:API document. Although the same media type is 
+used for both request and response documents,
 certain aspects are only applicable to one or the other. These differences are
 called out below.
 
@@ -665,21 +657,21 @@ For example, the following request fetches a collection of articles:
 
 ```http
 GET /articles HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 The following request fetches an article:
 
 ```http
 GET /articles/1 HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 And the following request fetches an article's author:
 
 ```http
 GET /articles/1/author HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 #### <a href="#fetching-resources-responses" id="fetching-resources-responses" class="headerlink"></a> Responses
@@ -697,7 +689,7 @@ For example, a `GET` request to a collection of articles could return:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -723,7 +715,7 @@ A similar response representing an empty collection would be:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -749,7 +741,7 @@ For example, a `GET` request to an individual article could return:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -777,7 +769,7 @@ resource would return:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -812,14 +804,14 @@ For example, the following request fetches data about an article's comments:
 
 ```http
 GET /articles/1/relationships/comments HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 And the following request fetches data about an article's author:
 
 ```http
 GET /articles/1/relationships/author HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 #### <a href="#fetching-relationships-responses" id="fetching-relationships-responses" class="headerlink"></a> Responses
@@ -841,7 +833,7 @@ return:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -860,7 +852,7 @@ return:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -875,7 +867,7 @@ A `GET` request to a URL from a to-many relationship link could return:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -894,7 +886,7 @@ return:
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "links": {
@@ -956,7 +948,7 @@ For instance, comments could be requested with an article:
 
 ```http
 GET /articles/1?include=comments HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 In order to request resources related to other resources, a dot-separated path
@@ -964,7 +956,7 @@ for each relationship name can be specified:
 
 ```http
 GET /articles/1?include=comments.author HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 > Note: Because [compound documents][compound document] require full linkage
@@ -986,14 +978,14 @@ Multiple related resources can be requested in a comma-separated list:
 
 ```http
 GET /articles/1?include=author,comments.author HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 Furthermore, related resources can be requested from a relationship endpoint:
 
 ```http
 GET /articles/1/relationships/comments?include=comments.author HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 In this case, the primary data would be a collection of
@@ -1019,7 +1011,7 @@ that type in its response.
 
 ```http
 GET /articles?include=author&fields[articles]=title,body&fields[people]=name HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 > Note: The above example URI shows unencoded `[` and `]` characters simply for
@@ -1050,7 +1042,7 @@ query parameter. The value for `sort` **MUST** represent sort fields.
 
 ```http
 GET /people?sort=age HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 An endpoint **MAY** support multiple sort fields by allowing comma-separated
@@ -1059,7 +1051,7 @@ order specified.
 
 ```http
 GET /people?sort=age,name HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 The sort order for each sort field **MUST** be ascending unless it is prefixed
@@ -1067,7 +1059,7 @@ with a minus (U+002D HYPHEN-MINUS, "-"), in which case it **MUST** be descending
 
 ```http
 GET /articles?sort=-created,title HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 The above example should return the newest articles first. Any articles
@@ -1183,8 +1175,8 @@ For instance, a new photo might be created with the following request:
 
 ```http
 POST /photos HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": {
@@ -1226,8 +1218,8 @@ For example:
 
 ```http
 PUT /photos/550e8400-e29b-41d4-a716-446655440000 HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": {
@@ -1265,7 +1257,7 @@ member **MUST** match the value of the `Location` header.
 ```http
 HTTP/1.1 201 Created
 Location: http://example.com/photos/550e8400-e29b-41d4-a716-446655440000
-Content-Type: application/vnd.api+json
+Content-Type: application/json
 
 {
   "data": {
@@ -1348,8 +1340,8 @@ For example:
 
 ```http
 PATCH /articles/1 HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": {
@@ -1377,8 +1369,8 @@ update only the `title` and `text` attributes of an article:
 
 ```http
 PATCH /articles/1 HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": {
@@ -1416,8 +1408,8 @@ For instance, the following `PATCH` request will update the `author` relationshi
 
 ```http
 PATCH /articles/1 HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": {
@@ -1437,8 +1429,8 @@ the `tags` for an article:
 
 ```http
 PATCH /articles/1 HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": {
@@ -1562,8 +1554,8 @@ For example, the following request updates the author of an article:
 
 ```http
 PATCH /articles/1/relationships/author HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": { "type": "people", "id": "12" }
@@ -1574,8 +1566,8 @@ And the following request clears the author of the same article:
 
 ```http
 PATCH /articles/1/relationships/author HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": null
@@ -1603,8 +1595,8 @@ For example, the following request replaces every tag for an article:
 
 ```http
 PATCH /articles/1/relationships/tags HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": [
@@ -1618,8 +1610,8 @@ And the following request clears every tag for an article:
 
 ```http
 PATCH /articles/1/relationships/tags HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": []
@@ -1647,8 +1639,8 @@ comments for the article with ID `1`:
 
 ```http
 POST /articles/1/relationships/comments HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": [
@@ -1673,8 +1665,8 @@ from the list of comments for the article with ID `1`:
 
 ```http
 DELETE /articles/1/relationships/comments HTTP/1.1
-Content-Type: application/vnd.api+json
-Accept: application/vnd.api+json
+Content-Type: application/json
+Accept: application/json
 
 {
   "data": [
@@ -1742,7 +1734,7 @@ resource's URL:
 
 ```http
 DELETE /photos/1 HTTP/1.1
-Accept: application/vnd.api+json
+Accept: application/json
 ```
 
 #### <a href="#crud-deleting-responses" id="crud-deleting-responses" class="headerlink"></a> Responses
