@@ -577,6 +577,7 @@ by clients and servers, and they **MUST** meet all of the following conditions:
 - Member names **MUST** contain only the allowed characters listed below.
 - Member names **MUST** start and end with a "globally allowed character",
   as defined below.
+- Member names **MUST** use camelCasing   
 
 To enable an easy mapping of member names to URLs, it is **RECOMMENDED** that
 member names use only non-reserved, URL safe characters specified in [RFC 3986](http://tools.ietf.org/html/rfc3986#page-13).
@@ -638,6 +639,17 @@ The following characters **MUST NOT** be used in member names:
 
 Data, including resources and relationships, can be fetched by sending a
 `GET` request to an endpoint.
+
+In general, servers **SHOULD** service fetching via a `GET` request. However, in cases
+where it is possible that lengthy search parameters provided via query parameters 
+may exceed the maximum URL length (1024), servers **MAY** support fetching via 
+a `POST` request. In that case the search parameters **MUST** be included in the POST body. 
+These scenarios should be limited to endpoints that service custom reports for example, 
+where clients could be passing in hundreds of IDs to generate a report. 
+
+In such a case, where a fetch is supported via a `POST` request, the server **SHOULD NOT** support
+fetch via both `GET` and `POST`; rather only `POST` may be supported. In addition, this
+deviation from the norm **MUST** be clearly called out in the supporting documention (e.g. OpenAPI).
 
 Responses can be further refined with the optional features described below.
 
@@ -1102,15 +1114,32 @@ Concepts of order, as expressed in the naming of pagination links, **MUST**
 remain consistent with JSON:API's [sorting rules](#fetching-sorting).
 
 The `page` query parameter is reserved for pagination. Servers and clients
-**SHOULD** use this key for pagination operations.
+**MUST** use this key for pagination operations.
 
-> Note: JSON:API is agnostic about the pagination strategy used by a server.
-Effective pagination strategies include (but are not limited to):
-page-based, offset-based, and cursor-based. The `page` query parameter can
-be used as a basis for any of these strategies. For example, a page-based
-strategy might use query parameters such as `page[number]` and `page[size]`,
-an offset-based strategy might use `page[offset]` and `page[limit]`, while a
-cursor-based strategy might use `page[cursor]`.
+In terms of the pagination contract between servers and clients, servers **MUST** 
+implement the cursor-based pagination contract as described in the 
+[cursor pagination extension](/profiles/ethanresnick/cursor-pagination/).
+
+This means that the client makes an initial fetch request, optionally providing
+a page size limit via the `page[size]=X` query parameter. Note that the server
+**MAY** implement a default page size and **MAY** also impose a maximum size limit
+that overrides the client request. Once this initial request is made, the server
+will respond with the data for the initial page, and include pagination links 
+for `next` and `prev` links in the pagination. The client **MUST** follow these links
+for pagination, and **MUST NOT** try and compose the URL manually. The cursor tokens
+provided by server **SHOULD** be opaque to the client so that the client does not try
+and manually form the pagination links. 
+
+All of the above described the contract for pagination between server and client. 
+The server is free to implement the actual pagination logic internally as it best 
+sees fit, which may depend on the datasource in question. If possible, the server **SHOULD**
+implement true cursor based pagination. For example, postgres has support for native cursors
+in queries see [here[(https://www.citusdata.com/blog/2016/03/30/five-ways-to-paginate/). This is optimal
+as offset based pagination suffers from page window inconsistency; see 
+[this link](https://slack.engineering/evolving-api-pagination-at-slack-1c1f644f8e12) for more details.
+If a true cursor based implementation is not possible, then a server **MAY** implement time based 
+pagination or offset based pagination. In either case, as mentioned above the server **SHOULD** 
+make the cursors opaque to the client (even via Base64 encoding for example).
 
 > Note: The example query parameters above use unencoded `[` and `]` characters
 simply for readability. In practice, these characters must be percent-encoded,
@@ -1181,7 +1210,8 @@ have.
 #### <a href="#crud-creating-client-ids" id="crud-creating-client-ids" class="headerlink"></a> Client-Generated IDs
 
 A server **MAY** accept a client-generated ID along with a request to create
-a resource. An ID **MUST** be specified with an `id` key, the value of
+a resource. In this case, the request **MUST** be a `PUT`. 
+An ID **MUST** be specified with an `id` key, the value of
 which **MUST** be a universally unique identifier. The client **SHOULD** use
 a properly generated and formatted *UUID* as described in RFC 4122
 [[RFC4122](http://tools.ietf.org/html/rfc4122.html)].
@@ -1195,7 +1225,7 @@ unique identifiers.
 For example:
 
 ```http
-POST /photos HTTP/1.1
+PUT /photos/550e8400-e29b-41d4-a716-446655440000 HTTP/1.1
 Content-Type: application/vnd.api+json
 Accept: application/vnd.api+json
 
@@ -1304,7 +1334,7 @@ responses, in accordance with
 
 ### <a href="#crud-updating" id="crud-updating" class="headerlink"></a> Updating Resources
 
-A resource can be updated by sending a `PATCH` request to the URL that
+A resource can be partially updated by sending a `PATCH` request to the URL that
 represents the resource.
 
 The URL for a resource can be obtained in the `self` link of the resource
@@ -1361,6 +1391,12 @@ Accept: application/vnd.api+json
   }
 }
 ```
+
+Updating ALL of a resource's [attributes] **MAY** also be provided by the server 
+via a `PUT` request to the URL that represents the resource.
+In this case, ALL of the [attributes] must be included in the request. If any of the attributes 
+for the resource are missing, the service **MUST** interpret the missing attributes as
+`null` values.
 
 #### <a href="#crud-updating-resource-relationships" id="crud-updating-resource-relationships" class="headerlink"></a> Updating a Resource's Relationships
 
