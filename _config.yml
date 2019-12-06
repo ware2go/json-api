@@ -110,7 +110,7 @@ navigation:
 
 quicklinks:
 - title: View the specification
-  url: /format/
+  url: /json-api/format/
 - title: Contribute on GitHub
   url: https://github.com/json-api/json-api
 
