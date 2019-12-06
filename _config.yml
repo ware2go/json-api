@@ -94,7 +94,7 @@ navigation:
 - title: JSON API
   url: /
 - title: Specification
-  url: /format/
+  url: /json-api/format/
 - title: Extensions
   url: /extensions/
 - title: Recommendations
