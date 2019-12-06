@@ -1,4 +1,4 @@
-url: http://jsonapi.org
+baseurl: /json-api
 source: .
 destination: ./public
 
