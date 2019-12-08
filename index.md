@@ -112,7 +112,7 @@ type designation is [`application/vnd.api+json`](http://www.iana.org/assignments
 ## <a href="#format-documentation" id="format-documentation" class="headerlink"></a> Format documentation
 
 To get started with JSON:API, check out [documentation for the base
-specification](/format).
+specification](/json-api/format).
 
 ## <a href="#extensions" id="extensions" class="headerlink"></a> Extensions
 
@@ -120,21 +120,5 @@ The JSON:API community has created a collection of extensions that APIs can use
 to provide clients with information or functionality beyond that described in the 
 base JSON:API specification. These extensions are called profiles.
 
-You can [browse existing profiles](/extensions/#existing-profiles) or
-[create a new one](/extensions/#profile-creation).
-
-## <a href="#update-history" id="update-history" class="headerlink"></a> Update history
-
-- 2018-12-01: 1.1 Release candidate announced. 
-  - New features include: [profiles](https://jsonapi.org/format/1.1/#profiles), ["@-Members"](https://jsonapi.org/format/1.1/#document-member-names-at-members), and [error object `type` links](https://jsonapi.org/format/1.1/#error-objects). 
-  - There are editorial clarifications around: [query parameters](https://jsonapi.org/format/1.1/#query-parameters) (their parsing/serialization, and reserved parameter names), the appropriate status code for [specific](https://github.com/json-api/json-api/pull/1036) [responses](https://github.com/json-api/json-api/pull/1029), and the [presence of the `included` key](https://github.com/json-api/json-api/pull/1236) even when its value is an empty array.
-  - JSON:API switched to [recommending camelCased names](https://jsonapi.org/recommendations/#naming).
-- 2015-05-29: 1.0 final released.
-- 2015-05-21: Release candidate 4 released.
-- 2015-03-16: Release candidate 3 released.
-- 2015-02-18: Release candidate 2 released.
-- 2014-07-05: Release candidate 1 released.
-- 2013-07-21: Media type registration completed with the IANA.
-- 2013-05-03: Initial release of the draft.
-
-You can subscribe to an RSS feed of individual changes [here](https://github.com/json-api/json-api/commits.atom).
+You can [browse existing profiles](/json-api/extensions/#existing-profiles) or
+[create a new one](/json-api/extensions/#profile-creation).
